@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/AcademItSchoolOOP.iml" filepath="$PROJECT_DIR$/.idea/AcademItSchoolOOP.iml" />
       <module fileurl="file://$PROJECT_DIR$/Hello/Hello.iml" filepath="$PROJECT_DIR$/Hello/Hello.iml" />
       <module fileurl="file://$PROJECT_DIR$/Range/Range.iml" filepath="$PROJECT_DIR$/Range/Range.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Shape/Shape.iml" filepath="$PROJECT_DIR$/Shape/Shape.iml" />
     </modules>
   </component>
 </project>
