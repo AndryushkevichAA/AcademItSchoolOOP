@@ -1,4 +1,6 @@
-package ru.nsu.andryushkevich.shape;
+package ru.nsu.andryushkevich.square;
+
+import ru.nsu.andryushkevich.shape.Shape;
 
 public class Square implements Shape {
     private final double sideLength;

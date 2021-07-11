@@ -1,4 +1,6 @@
-package ru.nsu.andryushkevich.shape;
+package ru.nsu.andryushkevich.triangle;
+
+import ru.nsu.andryushkevich.shape.Shape;
 
 public class Triangle implements Shape {
     private final double x1;

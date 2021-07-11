@@ -1,4 +1,6 @@
-package ru.nsu.andryushkevich.shape;
+package ru.nsu.andryushkevich.circle;
+
+import ru.nsu.andryushkevich.shape.Shape;
 
 public class Circle implements Shape {
     private final double radius;

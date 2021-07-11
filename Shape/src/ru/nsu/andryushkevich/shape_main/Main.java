@@ -1,6 +1,10 @@
 package ru.nsu.andryushkevich.shape_main;
 
+import ru.nsu.andryushkevich.circle.Circle;
+import ru.nsu.andryushkevich.rectangle.Rectangle;
 import ru.nsu.andryushkevich.shape.*;
+import ru.nsu.andryushkevich.square.Square;
+import ru.nsu.andryushkevich.triangle.Triangle;
 
 import java.util.Arrays;
 import java.util.Comparator;
