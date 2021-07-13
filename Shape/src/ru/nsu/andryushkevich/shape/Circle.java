@@ -1,6 +1,4 @@
-package ru.nsu.andryushkevich.circle;
-
-import ru.nsu.andryushkevich.shape.Shape;
+package ru.nsu.andryushkevich.shape;
 
 public class Circle implements Shape {
     private final double radius;
@@ -50,7 +48,7 @@ public class Circle implements Shape {
             return true;
         }
 
-        if (object == null || object.getClass() != this.getClass()) {
+        if (object == null || object.getClass() != getClass()) {
             return false;
         }
 

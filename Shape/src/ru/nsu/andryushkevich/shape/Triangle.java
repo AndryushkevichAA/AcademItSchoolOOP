@@ -1,6 +1,4 @@
-package ru.nsu.andryushkevich.triangle;
-
-import ru.nsu.andryushkevich.shape.Shape;
+package ru.nsu.andryushkevich.shape;
 
 public class Triangle implements Shape {
     private final double x1;
@@ -19,6 +17,18 @@ public class Triangle implements Shape {
         this.y3 = y3;
     }
 
+    public double getSide1() {
+        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    }
+
+    public double getSide2() {
+        return Math.sqrt(Math.pow(x3 - x2, 2) + Math.pow(y3 - y2, 2));
+    }
+
+    public double getSide3() {
+        return Math.sqrt(Math.pow(x3 - x1, 2) + Math.pow(y3 - y1, 2));
+    }
+
     @Override
     public double getWidth() {
         return Math.max(Math.max(x1, x2), x3) - Math.min(Math.min(x1, x2), x3);
@@ -31,27 +41,23 @@ public class Triangle implements Shape {
 
     @Override
     public double getArea() {
-        double side1 = Math.sqrt((Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2)));
-        double side2 = Math.sqrt((Math.pow((x3 - x2), 2) + Math.pow((y3 - y2), 2)));
-        double side3 = Math.sqrt((Math.pow((x3 - x1), 2) + Math.pow((y3 - y1), 2)));
-        double semiPerimeter = getPerimeter() / 2;
+        double side1 = getSide1();
+        double side2 = getSide2();
+        double side3 = getSide3();
+        double semiPerimeter = (side1 + side2 + side3) / 2;
 
         return Math.sqrt(semiPerimeter * (semiPerimeter - side1) * (semiPerimeter - side2) * (semiPerimeter - side3));
     }
 
     @Override
     public double getPerimeter() {
-        double side1 = Math.sqrt((Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2)));
-        double side2 = Math.sqrt((Math.pow((x3 - x2), 2) + Math.pow((y3 - y2), 2)));
-        double side3 = Math.sqrt((Math.pow((x3 - x1), 2) + Math.pow((y3 - y1), 2)));
-
-        return side1 + side2 + side3;
+        return getSide1() + getSide2() + getSide3();
     }
 
     @Override
     public String toString() {
-        return "Треугольник. Ширина: " + getWidth() + " Высота: " + getHeight()
-                + " Площадь: " + getArea() + " Периметр: " + getPerimeter();
+        return "Треугольник. Координаты вершин: (" + x1 + ", " + y1 + "), " + "(" + x2 + ", " + y2 + "), " + "(" + x3 + ", " + y3 + ") "
+                + " Высота: " + getHeight() + " Площадь: " + getArea() + " Периметр: " + getPerimeter();
     }
 
     @Override
@@ -75,7 +81,7 @@ public class Triangle implements Shape {
             return true;
         }
 
-        if (object == null || object.getClass() != this.getClass()) {
+        if (object == null || object.getClass() != getClass()) {
             return false;
         }
 

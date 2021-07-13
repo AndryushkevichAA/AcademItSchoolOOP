@@ -1,6 +1,4 @@
-package ru.nsu.andryushkevich.rectangle;
-
-import ru.nsu.andryushkevich.shape.Shape;
+package ru.nsu.andryushkevich.shape;
 
 public class Rectangle implements Shape {
     private final double width;
@@ -54,7 +52,7 @@ public class Rectangle implements Shape {
             return true;
         }
 
-        if (object == null || object.getClass() != this.getClass()) {
+        if (object == null || object.getClass() != getClass()) {
             return false;
         }
 
