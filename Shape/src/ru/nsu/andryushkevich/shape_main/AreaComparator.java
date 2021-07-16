@@ -1,4 +1,6 @@
-package ru.nsu.andryushkevich.shape;
+package ru.nsu.andryushkevich.shape_main;
+
+import ru.nsu.andryushkevich.shape.Shape;
 
 import java.util.Comparator;
 

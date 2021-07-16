@@ -17,16 +17,32 @@ public class Triangle implements Shape {
         this.y3 = y3;
     }
 
-    public double getSide1() {
+    public double getX1() {
+        return x1;
+    }
+
+    public double getY1() {
+        return y1;
+    }
+
+    public double getX2() {
+        return x2;
+    }
+
+    public double getY2() {
+        return y2;
+    }
+
+    public double getX3() {
+        return x3;
+    }
+
+    public double getY3() {
+        return y3;
+    }
+
+    public double getSideLength(double x1, double y1, double x2, double y2) {
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-    }
-
-    public double getSide2() {
-        return Math.sqrt(Math.pow(x3 - x2, 2) + Math.pow(y3 - y2, 2));
-    }
-
-    public double getSide3() {
-        return Math.sqrt(Math.pow(x3 - x1, 2) + Math.pow(y3 - y1, 2));
     }
 
     @Override
@@ -41,22 +57,23 @@ public class Triangle implements Shape {
 
     @Override
     public double getArea() {
-        double side1 = getSide1();
-        double side2 = getSide2();
-        double side3 = getSide3();
-        double semiPerimeter = (side1 + side2 + side3) / 2;
+        double sideLength1 = getSideLength(x1, y1, x2, y2);
+        double sideLength2 = getSideLength(x1, y1, x3, y3);
+        double sideLength3 = getSideLength(x2, y2, x3, y3);
+        double semiPerimeter = (sideLength1 + sideLength2 + sideLength3) / 2;
 
-        return Math.sqrt(semiPerimeter * (semiPerimeter - side1) * (semiPerimeter - side2) * (semiPerimeter - side3));
+        return Math.sqrt(semiPerimeter * (semiPerimeter - sideLength1) * (semiPerimeter - sideLength2)
+                * (semiPerimeter - sideLength3));
     }
 
     @Override
     public double getPerimeter() {
-        return getSide1() + getSide2() + getSide3();
+        return getSideLength(x1, y1, x2, y2) + getSideLength(x1, y1, x3, y3) + getSideLength(x2, y2, x3, y3);
     }
 
     @Override
     public String toString() {
-        return "Треугольник. Координаты вершин: (" + x1 + ", " + y1 + "), " + "(" + x2 + ", " + y2 + "), " + "(" + x3 + ", " + y3 + ") "
+        return "Треугольник. Координаты вершин: (" + x1 + ", " + y1 + "), (" + x2 + ", " + y2 + "), (" + x3 + ", " + y3 + ") "
                 + " Высота: " + getHeight() + " Площадь: " + getArea() + " Периметр: " + getPerimeter();
     }
 
@@ -87,7 +104,8 @@ public class Triangle implements Shape {
 
         Triangle triangle = (Triangle) object;
 
-        return x1 == triangle.x1 && y1 == triangle.y1 && x2 == triangle.x2 && y2 == triangle.y2
+        return x1 == triangle.x1 && y1 == triangle.y1
+                && x2 == triangle.x2 && y2 == triangle.y2
                 && x3 == triangle.x3 && y3 == triangle.y3;
     }
 }
