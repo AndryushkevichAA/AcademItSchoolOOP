@@ -13,7 +13,7 @@ public class Main {
         Vector vector4 = new Vector(vector3);
         Vector vector5 = new Vector(3, numbers2);
 
-        System.out.println("Вектор 1: " + vector1+ " Размерность: " + vector1.getSize()
+        System.out.println("Вектор 1: " + vector1 + " Размерность: " + vector1.getSize()
                 + ". Длина: " + vector1.getLength());
         System.out.println("Вектор 2: " + vector2 + " Размерность: " + vector2.getSize()
                 + ". Длина: " + vector2.getLength());
@@ -38,7 +38,7 @@ public class Main {
         System.out.println(vector4 + " + " + vector5 + " = Суммарный вектор: " + sumVector);
 
         Vector differenceVector = Vector.subtract(vector4, vector2);
-        System.out.println(vector4 + " - " + vector2 +" = Вектор разности: " + differenceVector);
+        System.out.println(vector4 + " - " + vector2 + " = Вектор разности: " + differenceVector);
 
         vector5.multiplyByScalar(10.0);
         System.out.print(vector5 + " * " + 10 + " = ");
