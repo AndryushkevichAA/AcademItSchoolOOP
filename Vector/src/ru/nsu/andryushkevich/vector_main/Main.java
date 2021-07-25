@@ -4,8 +4,8 @@ import ru.nsu.andryushkevich.vector.Vector;
 
 public class Main {
     public static void main(String[] args) {
-        Double[] numbers1 = {23.5, 10.0, 34.5};
-        Double[] numbers2 = {13.5, 15.0, 30.5, 2.1};
+        double[] numbers1 = {23.5, 10.0, 34.5};
+        double[] numbers2 = {13.5, 15.0, 30.5, 2.1};
 
         Vector vector1 = new Vector(4);
         Vector vector2 = new Vector(numbers1);
@@ -32,21 +32,23 @@ public class Main {
         System.out.println("Вектор 2 после вычитания из него вектора 5 станет таким: " + vector2);
 
         System.out.println("Получение компонента по индексу: " + vector2.getComponent(1));
-        System.out.println("Установка компонента по индексу: " + vector3.insertComponent(1.0, 2));
 
-        Vector sumVector = Vector.add(vector4, vector5);
-        System.out.println(vector4 + " + " + vector5 + " = Суммарный вектор: " + sumVector);
+        vector3.setComponent(2, 1.0);
+        System.out.println("Установка компонента по индексу: " + vector3);
 
-        Vector differenceVector = Vector.subtract(vector4, vector2);
+        Vector sumVector = Vector.getSum(vector4, vector5);
+        System.out.println(vector5 + " + " + vector4 + " = Суммарный вектор: " + sumVector);
+
+        Vector differenceVector = Vector.getDifference(vector4, vector2);
         System.out.println(vector4 + " - " + vector2 + " = Вектор разности: " + differenceVector);
 
         vector5.multiplyByScalar(10.0);
         System.out.print(vector5 + " * " + 10 + " = ");
         System.out.println(vector5.multiplyByScalar(10.0));
 
-        System.out.println("Разворот вектора: " + vector5.expand());
+        System.out.println("Разворот вектора: " + vector5.revers());
 
-        Vector multiplyVector = Vector.multiply(vector4, vector5);
-        System.out.println(vector4 + " * " + vector5 + " = " + multiplyVector);
+        System.out.println("Скалярное произведение " + vector4 + " и " + vector5 + " = "
+                + Vector.getScalarProduct(vector4, vector5));
     }
 }

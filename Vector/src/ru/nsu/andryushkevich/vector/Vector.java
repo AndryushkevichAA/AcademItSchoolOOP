@@ -3,100 +3,91 @@ package ru.nsu.andryushkevich.vector;
 import java.util.Arrays;
 
 public class Vector {
-    private int n;
-    private Double[] components;
+    private double[] components;
 
-    public Vector(int n) {
-        if (n <= 0) {
-            throw new IllegalArgumentException("размерность должна быть больше 0");
+    public Vector(int size) {
+        if (size <= 0) {
+            throw new IllegalArgumentException("размерность не должна быть равна " + size);
         }
 
-        this.n = n;
-
-        components = new Double[n];
-        Arrays.fill(components, 0.0);
+        components = new double[size];
     }
 
     public Vector(Vector vector) {
-        this(vector.n, vector.components);
+        this(vector.components.length, vector.components);
     }
 
-    public Vector(Double[] components) {
-        this.components = Arrays.copyOf(components, components.length);
-        n = components.length;
-    }
-
-    public Vector(int n, Double[] components) {
-        this(n);
-        this.components = Arrays.copyOf(components, n);
-
-        if (components.length < n) {
-            Arrays.fill(this.components, components.length, n, 0.0);
+    public Vector(double[] components) {
+        if (components.length == 0) {
+            throw new IllegalArgumentException("размерность не должна быть равна " + components.length);
         }
+
+        this.components = Arrays.copyOf(components, components.length);
+    }
+
+    public Vector(int size, double[] components) {
+        if (size <= 0) {
+            throw new IllegalArgumentException("размерность не должна быть равна " + size);
+        }
+
+        this.components = Arrays.copyOf(components, size);
     }
 
     public int getSize() {
-        return n;
-    }
-
-    private static Vector getOperationResult(Vector vector1, Vector vector2, int operationIndex) {
-        int maxSize = Math.max(vector1.n, vector2.n);
-
-        Vector vector1Copy = new Vector(maxSize, vector1.components);
-        Vector vector2Copy = new Vector(maxSize, vector2.components);
-
-        vector1.n = maxSize;
-
-        if (operationIndex == 1) {
-            for (int i = 0; i < vector1.n; i++) {
-                vector1Copy.components[i] += vector2Copy.components[i];
-            }
-        }
-
-        if (operationIndex == 2) {
-            for (int i = 0; i < vector1.n; i++) {
-                vector1Copy.components[i] -= vector2Copy.components[i];
-            }
-        }
-
-        if (operationIndex == 3) {
-            for (int i = 0; i < vector1.n; i++) {
-                vector1Copy.components[i] *= vector2Copy.components[i];
-            }
-        }
-
-        return vector1Copy;
+        return components.length;
     }
 
     // Прибавление вектора к вектору
     public Vector add(Vector vector) {
-        Vector resultVector = getOperationResult(this, vector, 1);
-        components = Arrays.copyOf(resultVector.components, resultVector.n);
+        double[] copyVectorComponents = vector.components;
+
+        if (components.length > vector.components.length) {
+            copyVectorComponents = Arrays.copyOf(vector.components, components.length);
+        }
+
+        if (components.length < vector.components.length) {
+            components = Arrays.copyOf(components, vector.components.length);
+        }
+
+        for (int i = 0; i < components.length; i++) {
+            components[i] += copyVectorComponents[i];
+        }
 
         return this;
     }
 
-    //сложение двух векторов
-    public static Vector add(Vector vector1, Vector vector2) {
+    //Получение суммы двух векторов
+    public static Vector getSum(Vector vector1, Vector vector2) {
         return new Vector(vector1).add(vector2);
     }
 
     // Вычитание вектора из вектора
     public Vector subtract(Vector vector) {
-        Vector resultVector = getOperationResult(this, vector, 2);
-        components = Arrays.copyOf(resultVector.components, resultVector.n);
+        double[] copyVectorComponents = vector.components;
+
+        if (components.length > vector.components.length) {
+            copyVectorComponents = Arrays.copyOf(vector.components, components.length);
+        }
+
+        if (components.length < vector.components.length) {
+            components = Arrays.copyOf(components, vector.components.length);
+        }
+
+        for (int i = 0; i < components.length; i++) {
+            components[i] -= copyVectorComponents[i];
+        }
 
         return this;
     }
 
-    // Вычитание двух векторов
-    public static Vector subtract(Vector vector1, Vector vector2) {
+    // Получение разности двух векторов
+    public static Vector getDifference(Vector vector1, Vector vector2) {
         return new Vector(vector1).subtract(vector2);
     }
 
     // Умножение вектора на скаляр
     public Vector multiplyByScalar(double scalar) {
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < components.length; i++) {
             components[i] *= scalar;
         }
 
@@ -104,24 +95,41 @@ public class Vector {
     }
 
     // Разворот вектора
-    public Vector expand() {
-        return this.multiplyByScalar(-1);
+    public Vector revers() {
+        return multiplyByScalar(-1);
     }
 
     // Скалярное умножение векторов
-    public static Vector multiply(Vector vector1, Vector vector2) {
-        return getOperationResult(vector1, vector2, 3);
+    public static double getScalarProduct(Vector vector1, Vector vector2) {
+        double[] copyVector1Components = vector1.components;
+        double[] copyVector2Components = vector2.components;
+
+        if (vector1.components.length > vector2.components.length) {
+            copyVector2Components = Arrays.copyOf(vector2.components, vector1.components.length);
+        }
+
+        if (vector1.components.length < vector2.components.length) {
+            copyVector1Components = Arrays.copyOf(vector1.components, vector2.components.length);
+        }
+
+        double scalarProduct = 0;
+
+        for (int i = 0; i < copyVector1Components.length; i++) {
+            scalarProduct += copyVector1Components[i] * copyVector2Components[i];
+        }
+
+        return scalarProduct;
     }
 
     //Получение длины вектора
     public double getLength() {
-        double result = 0;
+        double componentsSquareSum = 0;
 
-        for (int i = 0; i < n; i++) {
-            result += components[i] * components[i];
+        for (double component : components) {
+            componentsSquareSum += component * component;
         }
 
-        return Math.sqrt(result);
+        return Math.sqrt(componentsSquareSum);
     }
 
     //Получение компоненты по индексу
@@ -130,10 +138,8 @@ public class Vector {
     }
 
     //Установка компоненты по индексу
-    public Vector insertComponent(double component, int index) {
+    public void setComponent(int index, double component) {
         components[index] = component;
-
-        return this;
     }
 
     @Override
@@ -148,7 +154,7 @@ public class Vector {
 
         Vector vector = (Vector) object;
 
-        return n == vector.n && Arrays.equals(components, vector.components);
+        return Arrays.equals(components, vector.components);
     }
 
     @Override
@@ -156,7 +162,6 @@ public class Vector {
         final int prime = 31;
         int hash = 1;
 
-        hash = prime * hash + n;
         hash = prime * hash + Arrays.hashCode(components);
 
         return hash;
@@ -164,8 +169,8 @@ public class Vector {
 
     @Override
     public String toString() {
-        String companentsLine = Arrays.toString(components);
+        String componentsLine = Arrays.toString(components);
 
-        return "{" + companentsLine.substring(1, companentsLine.length() - 1) + "}";
+        return "{" + componentsLine.substring(1, componentsLine.length() - 1) + "}";
     }
 }
