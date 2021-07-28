@@ -36,7 +36,7 @@ public class Main {
         vector3.setComponent(2, 1.0);
         System.out.println("Установка компонента по индексу: " + vector3);
 
-        Vector sumVector = Vector.getSum(vector4, vector5);
+        Vector sumVector = Vector.getSum(vector5, vector4);
         System.out.println(vector5 + " + " + vector4 + " = Суммарный вектор: " + sumVector);
 
         Vector differenceVector = Vector.getDifference(vector4, vector2);
@@ -46,7 +46,7 @@ public class Main {
         System.out.print(vector5 + " * " + 10 + " = ");
         System.out.println(vector5.multiplyByScalar(10.0));
 
-        System.out.println("Разворот вектора: " + vector5.revers());
+        System.out.println("Разворот вектора: " + vector5.reverse());
 
         System.out.println("Скалярное произведение " + vector4 + " и " + vector5 + " = "
                 + Vector.getScalarProduct(vector4, vector5));

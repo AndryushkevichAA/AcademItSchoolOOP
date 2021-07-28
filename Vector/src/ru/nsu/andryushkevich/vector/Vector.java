@@ -7,7 +7,7 @@ public class Vector {
 
     public Vector(int size) {
         if (size <= 0) {
-            throw new IllegalArgumentException("размерность не должна быть равна " + size);
+            throw new IllegalArgumentException("Размерность должна быть > 0. Переданное значение: " + size);
         }
 
         components = new double[size];
@@ -19,7 +19,7 @@ public class Vector {
 
     public Vector(double[] components) {
         if (components.length == 0) {
-            throw new IllegalArgumentException("размерность не должна быть равна " + components.length);
+            throw new IllegalArgumentException("Размерность не должна быть равна " + components.length);
         }
 
         this.components = Arrays.copyOf(components, components.length);
@@ -27,7 +27,7 @@ public class Vector {
 
     public Vector(int size, double[] components) {
         if (size <= 0) {
-            throw new IllegalArgumentException("размерность не должна быть равна " + size);
+            throw new IllegalArgumentException("Размерность должна быть > 0. Переданное значение: " + size);
         }
 
         this.components = Arrays.copyOf(components, size);
@@ -39,18 +39,12 @@ public class Vector {
 
     // Прибавление вектора к вектору
     public Vector add(Vector vector) {
-        double[] copyVectorComponents = vector.components;
-
-        if (components.length > vector.components.length) {
-            copyVectorComponents = Arrays.copyOf(vector.components, components.length);
-        }
-
         if (components.length < vector.components.length) {
             components = Arrays.copyOf(components, vector.components.length);
         }
 
-        for (int i = 0; i < components.length; i++) {
-            components[i] += copyVectorComponents[i];
+        for (int i = 0; i < vector.components.length; i++) {
+            components[i] += vector.components[i];
         }
 
         return this;
@@ -63,18 +57,12 @@ public class Vector {
 
     // Вычитание вектора из вектора
     public Vector subtract(Vector vector) {
-        double[] copyVectorComponents = vector.components;
-
-        if (components.length > vector.components.length) {
-            copyVectorComponents = Arrays.copyOf(vector.components, components.length);
-        }
-
         if (components.length < vector.components.length) {
             components = Arrays.copyOf(components, vector.components.length);
         }
 
-        for (int i = 0; i < components.length; i++) {
-            components[i] -= copyVectorComponents[i];
+        for (int i = 0; i < vector.components.length; i++) {
+            components[i] -= vector.components[i];
         }
 
         return this;
@@ -95,27 +83,18 @@ public class Vector {
     }
 
     // Разворот вектора
-    public Vector revers() {
+    public Vector reverse() {
         return multiplyByScalar(-1);
     }
 
     // Скалярное умножение векторов
     public static double getScalarProduct(Vector vector1, Vector vector2) {
-        double[] copyVector1Components = vector1.components;
-        double[] copyVector2Components = vector2.components;
-
-        if (vector1.components.length > vector2.components.length) {
-            copyVector2Components = Arrays.copyOf(vector2.components, vector1.components.length);
-        }
-
-        if (vector1.components.length < vector2.components.length) {
-            copyVector1Components = Arrays.copyOf(vector1.components, vector2.components.length);
-        }
-
         double scalarProduct = 0;
 
-        for (int i = 0; i < copyVector1Components.length; i++) {
-            scalarProduct += copyVector1Components[i] * copyVector2Components[i];
+        int minVectorSize = Math.min(vector1.components.length, vector2.components.length);
+
+        for (int i = 0; i < minVectorSize; i++) {
+            scalarProduct += vector1.components[i] * vector2.components[i];
         }
 
         return scalarProduct;
@@ -123,13 +102,13 @@ public class Vector {
 
     //Получение длины вектора
     public double getLength() {
-        double componentsSquareSum = 0;
+        double componentsSquaresSum = 0;
 
         for (double component : components) {
-            componentsSquareSum += component * component;
+            componentsSquaresSum += component * component;
         }
 
-        return Math.sqrt(componentsSquareSum);
+        return Math.sqrt(componentsSquaresSum);
     }
 
     //Получение компоненты по индексу
