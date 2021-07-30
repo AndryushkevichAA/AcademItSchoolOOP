@@ -2,6 +2,7 @@ package ru.nsu.andryushkevich.range_main;
 
 import ru.nsu.andryushkevich.range.Range;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -41,5 +42,21 @@ public class Main {
         } else {
             System.out.printf("Число %f не принадлежит диапазону%n", number);
         }
+
+        Range range1 = new Range(10, 50);
+        Range range2 = new Range(30, 100);
+
+        Range intersectionRange = range1.getIntersection(range2);
+        Range[] unionRange = range1.getUnion(range2);
+        Range[] differenceRange = range1.getDifference(range2);
+
+        if (intersectionRange == null) {
+            System.out.println("Диапазоны не пересекаются");
+        } else {
+            System.out.println("Диапазон пересечения: " + intersectionRange);
+        }
+
+        System.out.println("Диапазон объединения: " + Arrays.toString(unionRange));
+        System.out.println("Диапазон разности: " + Arrays.toString(differenceRange));
     }
 }
