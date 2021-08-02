@@ -38,54 +38,42 @@ public class Range {
             return null;
         }
 
-        if (isInside(range.from) && isInside(range.to)) {
-            return new Range(range.from, range.to);
-        }
-
-        if (isInside(range.from)) {
-            return new Range(range.from, to);
-        }
-
-        if (isInside(range.to)) {
-            return new Range(from, range.to);
-        }
-
-        return this;
+        return new Range(Math.max(from, range.from), Math.min(to, range.to));
     }
 
     public Range[] getUnion(Range range) {
         if (range.to < from || range.from > to) {
-            return new Range[]{this, range};
+            return new Range[]{new Range(from, to), new Range(range.from, range.to)};
         }
 
         return new Range[]{new Range(Math.min(from, range.from), Math.max(to, range.to))};
     }
 
     public Range[] getDifference(Range range) {
-        if (from >= range.from && to <= range.to) {
-            return new Range[0];
+        if (range.to <= from || range.from >= to) {
+            return new Range[]{new Range(from, to)};
         }
 
-        if (isInside(range.from) && isInside(range.to)) {
+        if (range.from > from && range.to < to) {
             return new Range[]{
                     new Range(from, range.from),
                     new Range(range.to, to)
             };
         }
 
-        if (isInside(range.from)) {
+        if (range.from > from) {
             return new Range[]{new Range(from, range.from)};
         }
 
-        if (isInside(range.to)) {
+        if (range.to < to) {
             return new Range[]{new Range(range.to, to)};
         }
 
-        return new Range[]{this};
+        return new Range[0];
     }
 
     @Override
     public String toString() {
-        return "[" + from + ", " + to + "]";
+        return "(" + from + "; " + to + ")";
     }
 }

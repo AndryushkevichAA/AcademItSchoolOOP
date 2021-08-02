@@ -18,37 +18,37 @@ public class Main {
         System.out.print("Введите число: ");
         double number = scanner.nextDouble();
 
-        Range range = new Range(from, to);
+        Range range1 = new Range(from, to);
 
-        System.out.println("Начало диапазона: " + range.getFrom());
-        System.out.println("Конец диапазона: " + range.getTo());
-        System.out.println("Длина диапазона: " + range.getLength());
+        System.out.println("Начало диапазона: " + range1.getFrom());
+        System.out.println("Конец диапазона: " + range1.getTo());
+        System.out.println("Длина диапазона: " + range1.getLength());
 
-        if (range.isInside(number)) {
+        if (range1.isInside(number)) {
             System.out.printf("Число %f принадлежит диапазону%n", number);
         } else {
             System.out.printf("Число %f не принадлежит диапазону%n", number);
         }
 
-        range.setFrom(2);
-        range.setTo(10);
+        range1.setFrom(2);
+        range1.setTo(10);
 
-        System.out.println("Начало диапазона: " + range.getFrom());
-        System.out.println("Конец диапазона: " + range.getTo());
-        System.out.println("Длина диапазона: " + range.getLength());
+        System.out.println("Начало диапазона: " + range1.getFrom());
+        System.out.println("Конец диапазона: " + range1.getTo());
+        System.out.println("Длина диапазона: " + range1.getLength());
 
-        if (range.isInside(number)) {
+        if (range1.isInside(number)) {
             System.out.printf("Число %f принадлежит диапазону%n", number);
         } else {
             System.out.printf("Число %f не принадлежит диапазону%n", number);
         }
 
-        Range range1 = new Range(10, 50);
-        Range range2 = new Range(30, 100);
+        Range range2 = new Range(10, 50);
+        Range range3 = new Range(50, 120);
 
-        Range intersectionRange = range1.getIntersection(range2);
-        Range[] unionRange = range1.getUnion(range2);
-        Range[] differenceRange = range1.getDifference(range2);
+        Range intersectionRange = range2.getIntersection(range3);
+        Range[] union = range2.getUnion(range3);
+        Range[] difference = range2.getDifference(range3);
 
         if (intersectionRange == null) {
             System.out.println("Диапазоны не пересекаются");
@@ -56,7 +56,7 @@ public class Main {
             System.out.println("Диапазон пересечения: " + intersectionRange);
         }
 
-        System.out.println("Диапазон объединения: " + Arrays.toString(unionRange));
-        System.out.println("Диапазон разности: " + Arrays.toString(differenceRange));
+        System.out.println("Объединение диапазонов: " + Arrays.toString(union));
+        System.out.println("Разность диапазонов: " + Arrays.toString(difference));
     }
 }
