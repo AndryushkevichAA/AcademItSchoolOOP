@@ -34,7 +34,7 @@ public class ArrayListHome {
     }
 
     public static ArrayList<Integer> getNotRepeatingNumbersList(ArrayList<Integer> numbers) {
-        ArrayList<Integer> notRepeatingNumbers = new ArrayList<>(10);
+        ArrayList<Integer> notRepeatingNumbers = new ArrayList<>(numbers.size());
 
         for (Integer number : numbers) {
             if (!notRepeatingNumbers.contains(number)) {
