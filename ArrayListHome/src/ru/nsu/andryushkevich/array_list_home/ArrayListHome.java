@@ -1,22 +1,23 @@
 package ru.nsu.andryushkevich.array_list_home;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
 
 public class ArrayListHome {
     public static ArrayList<String> getFileLinesList(File file) {
         ArrayList<String> fileLines = new ArrayList<>();
 
-        try (Scanner scanner = new Scanner(new FileInputStream(file))) {
-            while (scanner.hasNextLine()) {
-                fileLines.add(scanner.nextLine());
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                fileLines.add(line);
             }
         } catch (FileNotFoundException e) {
             System.out.println("Не удается найти указанный файл");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return fileLines;
@@ -33,7 +34,7 @@ public class ArrayListHome {
     }
 
     public static ArrayList<Integer> getNotRepeatingNumbersList(ArrayList<Integer> numbers) {
-        ArrayList<Integer> notRepeatingNumbers = new ArrayList<>();
+        ArrayList<Integer> notRepeatingNumbers = new ArrayList<>(10);
 
         for (Integer number : numbers) {
             if (!notRepeatingNumbers.contains(number)) {
