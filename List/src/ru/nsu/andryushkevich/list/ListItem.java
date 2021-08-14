@@ -1,4 +1,4 @@
-package ru.nsu.andruyshkevich.list;
+package ru.nsu.andryushkevich.list;
 
 public class ListItem<T> {
     private T data;
