@@ -46,6 +46,5 @@ public class Main {
 
         SingleLinkedList<Integer> copiedList = list.getCopy();
         System.out.println("Копия списка: " + copiedList);
-
     }
 }
