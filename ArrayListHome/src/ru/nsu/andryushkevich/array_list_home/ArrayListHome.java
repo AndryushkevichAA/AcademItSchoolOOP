@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ArrayListHome {
-    public static ArrayList<String> getFileLinesList(File file) {
+    public static ArrayList<String> getFileLinesList(File file) throws IOException {
         ArrayList<String> fileLines = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -14,10 +14,6 @@ public class ArrayListHome {
             while ((line = reader.readLine()) != null) {
                 fileLines.add(line);
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Не удается найти указанный файл");
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         return fileLines;
@@ -46,8 +42,14 @@ public class ArrayListHome {
     }
 
     public static void main(String[] args) {
-        File file = new File("ArrayListHome/src/ru/nsu/andryushkevich/array_list_home/input.txt");
-        System.out.println("Список строк файла: " + getFileLinesList(file));
+        try {
+            File file = new File("ArrayListHome/src/ru/nsu/andryushkevich/array_list_home/input.txt");
+            System.out.println("Список строк файла: " + getFileLinesList(file));
+        } catch (FileNotFoundException e) {
+            System.out.println("Не удается найти указанный файл");
+        } catch (IOException e) {
+            System.out.println("Ошибка чтения файла");
+        }
 
         ArrayList<Integer> numbers1 = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8));
         removeEvenNumbers(numbers1);
