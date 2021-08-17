@@ -8,14 +8,13 @@ public class ArrayListHome {
     public static ArrayList<String> getFileLinesList(File file) throws IOException {
         ArrayList<String> fileLines = new ArrayList<>();
 
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        String line;
+        try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
 
-        while ((line = reader.readLine()) != null) {
-            fileLines.add(line);
+            while ((line = reader.readLine()) != null) {
+                fileLines.add(line);
+            }
         }
-
-        reader.close();
 
         return fileLines;
     }
