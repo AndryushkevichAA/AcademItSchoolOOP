@@ -1,5 +1,8 @@
 package ru.nsu.andryushkevich.list;
 
+import java.util.NoSuchElementException;
+import java.util.Objects;
+
 public class SingleLinkedList<T> {
     private ListItem<T> head;
     private int size;
@@ -10,7 +13,7 @@ public class SingleLinkedList<T> {
 
     private void checkListIsEmpty() {
         if (size == 0) {
-            throw new NullPointerException("Элемента не существует. Пустой список");
+            throw new NoSuchElementException("Элемента не существует. Пустой список");
         }
     }
 
@@ -78,32 +81,27 @@ public class SingleLinkedList<T> {
     }
 
     public void addByIndex(int index, T value) {
-        if (index < 0) {
-            throw new IndexOutOfBoundsException("Индекс должен быть >= 0. Переданое значение: " + index);
-        } else if (index == 0) {
-            addFirst(value);
-
-            return;
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Индекс " + index + " выходит за пределы размера списка " + size);
         }
 
-        ListItem<T> node = getNodeByIndex(index - 1);
-        ListItem<T> newNode = new ListItem<>(value, node.getNext());
+        if (index == 0) {
+            addFirst(value);
+        } else {
+            ListItem<T> node = getNodeByIndex(index - 1);
+            ListItem<T> newNode = new ListItem<>(value, node.getNext());
 
-        node.setNext(newNode);
-        size++;
+            node.setNext(newNode);
+            size++;
+        }
     }
 
     public boolean remove(T value) {
-        checkListIsEmpty();
+        if (size == 0) {
+            return false;
+        }
 
-        if (head.getData() == null || value == null) {
-            if (head.getData() == value) {
-                head = head.getNext();
-                size--;
-
-                return true;
-            }
-        } else if (head.getData().equals(value)) {
+        if (Objects.equals(head.getData(), value)) {
             head = head.getNext();
             size--;
 
@@ -111,14 +109,7 @@ public class SingleLinkedList<T> {
         }
 
         for (ListItem<T> node = head, previousNode = null; node != null; previousNode = node, node = node.getNext()) {
-            if (node.getData() == null || value == null) {
-                if (node.getData() == value) {
-                    previousNode.setNext(node.getNext());
-                    size--;
-
-                    return true;
-                }
-            } else if (node.getData().equals(value)) {
+            if (Objects.equals(node.getData(), value)) {
                 previousNode.setNext(node.getNext());
                 size--;
 
@@ -145,12 +136,12 @@ public class SingleLinkedList<T> {
         ListItem<T> previousNode = null;
 
         while (node != null) {
-            ListItem<T> nexNode = node.getNext();
+            ListItem<T> nextNode = node.getNext();
 
             node.setNext(previousNode);
 
             previousNode = node;
-            node = nexNode;
+            node = nextNode;
         }
 
         head = previousNode;
@@ -159,14 +150,16 @@ public class SingleLinkedList<T> {
     public SingleLinkedList<T> getCopy() {
         SingleLinkedList<T> listCopy = new SingleLinkedList<>();
 
+        if (size == 0) {
+            return listCopy;
+        }
+
+        listCopy.head = new ListItem<>(head.getData());
         listCopy.size = size;
-        listCopy.head = head;
 
-        ListItem<T> listCopyNode = listCopy.head;
-
-        for (ListItem<T> node = head; node != null; node = node.getNext()) {
-            listCopyNode.setNext(node.getNext());
-            listCopyNode = listCopyNode.getNext();
+        for (ListItem<T> node = head.getNext(), listCopyNode = listCopy.head; node != null;
+             node = node.getNext(), listCopyNode = listCopyNode.getNext()) {
+            listCopyNode.setNext(new ListItem<>(node.getData()));
         }
 
         return listCopy;
@@ -175,15 +168,16 @@ public class SingleLinkedList<T> {
     @Override
     public String toString() {
         if (size == 0) {
-            return "()";
+            return "[]";
         }
 
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[");
 
         for (ListItem<T> node = head; node != null; node = node.getNext()) {
             stringBuilder.append(node.getData()).append(", ");
         }
 
-        return stringBuilder.insert(0, "(").replace(stringBuilder.length() - 2, stringBuilder.length(), ") ").toString();
+        return stringBuilder.replace(stringBuilder.length() - 2, stringBuilder.length(), "]").toString();
     }
 }
