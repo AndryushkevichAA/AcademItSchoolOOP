@@ -29,13 +29,13 @@ public class Main {
         list.addByIndex(index4, 80);
         System.out.println("Список после вставки элемента по индексу " + index4 + ": " + list);
 
-        Integer value = null;
-        boolean isRemoved = list.remove(value);
+        Integer data = null;
+        boolean isRemoved = list.remove(data);
 
         if (isRemoved) {
-            System.out.println("Элемент со значением " + value + " удален. Измененный список: " + list);
+            System.out.println("Элемент со значением " + data + " удален. Измененный список: " + list);
         } else {
-            System.out.println("Элемент со значением " + value + " не найден.");
+            System.out.println("Элемент со значением " + data + " не найден.");
         }
 
         System.out.println("Удаление первого элемента со значением: " + list.removeFirst());

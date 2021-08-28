@@ -25,36 +25,37 @@ public class SingleLinkedList<T> {
 
     private void checkIndex(int index) {
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Индекс " + index + " выходит за пределы размера списка " + size);
+            throw new IndexOutOfBoundsException("Индекс должен быть больше или равен 0 и меньше " + size
+                    + " Переданое значение: " + index);
         }
     }
 
-    private ListItem<T> getNodeByIndex(int index) {
-        ListItem<T> node = head;
+    private ListItem<T> getItemByIndex(int index) {
+        ListItem<T> item = head;
 
         for (int i = 0; i < index; i++) {
-            node = node.getNext();
+            item = item.getNext();
         }
 
-        return node;
+        return item;
     }
 
     public T get(int index) {
         checkIndex(index);
 
-        ListItem<T> node = getNodeByIndex(index);
-        return node.getData();
+        ListItem<T> item = getItemByIndex(index);
+        return item.getData();
     }
 
-    public T set(int index, T value) {
+    public T set(int index, T data) {
         checkIndex(index);
 
-        ListItem<T> node = getNodeByIndex(index);
-        T oldValue = node.getData();
+        ListItem<T> item = getItemByIndex(index);
+        T oldData = item.getData();
 
-        node.setData(value);
+        item.setData(data);
 
-        return oldValue;
+        return oldData;
     }
 
     public T removeByIndex(int index) {
@@ -64,53 +65,51 @@ public class SingleLinkedList<T> {
             return removeFirst();
         }
 
-        ListItem<T> node = getNodeByIndex(index - 1);
-        ListItem<T> removedNode = node.getNext();
+        ListItem<T> item = getItemByIndex(index - 1);
+        ListItem<T> removedItem = item.getNext();
 
-        T removedValue = removedNode.getData();
-
-        node.setNext(removedNode.getNext());
+        item.setNext(removedItem.getNext());
         size--;
 
-        return removedValue;
+        return removedItem.getData();
     }
 
-    public void addFirst(T value) {
-        head = new ListItem<>(value, head);
+    public void addFirst(T data) {
+        head = new ListItem<>(data, head);
         size++;
     }
 
-    public void addByIndex(int index, T value) {
+    public void addByIndex(int index, T data) {
         if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException("Индекс " + index + " выходит за пределы размера списка " + size);
+            throw new IndexOutOfBoundsException("Индекс должен быть больше или равен 0 и меньше или равен " + size
+                    + " Переданое значение: " + index);
         }
 
         if (index == 0) {
-            addFirst(value);
-        } else {
-            ListItem<T> node = getNodeByIndex(index - 1);
-            ListItem<T> newNode = new ListItem<>(value, node.getNext());
-
-            node.setNext(newNode);
-            size++;
+            addFirst(data);
+            return;
         }
+
+        ListItem<T> previousItem = getItemByIndex(index - 1);
+
+        previousItem.setNext(new ListItem<>(data, previousItem.getNext()));
+        size++;
     }
 
-    public boolean remove(T value) {
+    public boolean remove(T data) {
         if (size == 0) {
             return false;
         }
 
-        if (Objects.equals(head.getData(), value)) {
-            head = head.getNext();
-            size--;
+        if (Objects.equals(head.getData(), data)) {
+            removeFirst();
 
             return true;
         }
 
-        for (ListItem<T> node = head, previousNode = null; node != null; previousNode = node, node = node.getNext()) {
-            if (Objects.equals(node.getData(), value)) {
-                previousNode.setNext(node.getNext());
+        for (ListItem<T> item = head.getNext(), previousItem = head; item != null; previousItem = item, item = item.getNext()) {
+            if (Objects.equals(item.getData(), data)) {
+                previousItem.setNext(item.getNext());
                 size--;
 
                 return true;
@@ -132,19 +131,19 @@ public class SingleLinkedList<T> {
     }
 
     public void reverse() {
-        ListItem<T> node = head;
-        ListItem<T> previousNode = null;
+        ListItem<T> item = head;
+        ListItem<T> previousItem = null;
 
-        while (node != null) {
-            ListItem<T> nextNode = node.getNext();
+        while (item != null) {
+            ListItem<T> nextItem = item.getNext();
 
-            node.setNext(previousNode);
+            item.setNext(previousItem);
 
-            previousNode = node;
-            node = nextNode;
+            previousItem = item;
+            item = nextItem;
         }
 
-        head = previousNode;
+        head = previousItem;
     }
 
     public SingleLinkedList<T> getCopy() {
@@ -157,9 +156,9 @@ public class SingleLinkedList<T> {
         listCopy.head = new ListItem<>(head.getData());
         listCopy.size = size;
 
-        for (ListItem<T> node = head.getNext(), listCopyNode = listCopy.head; node != null;
-             node = node.getNext(), listCopyNode = listCopyNode.getNext()) {
-            listCopyNode.setNext(new ListItem<>(node.getData()));
+        for (ListItem<T> item = head.getNext(), listCopyItem = listCopy.head; item != null;
+             item = item.getNext(), listCopyItem = listCopyItem.getNext()) {
+            listCopyItem.setNext(new ListItem<>(item.getData()));
         }
 
         return listCopy;
@@ -174,8 +173,8 @@ public class SingleLinkedList<T> {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("[");
 
-        for (ListItem<T> node = head; node != null; node = node.getNext()) {
-            stringBuilder.append(node.getData()).append(", ");
+        for (ListItem<T> item = head; item != null; item = item.getNext()) {
+            stringBuilder.append(item.getData()).append(", ");
         }
 
         return stringBuilder.replace(stringBuilder.length() - 2, stringBuilder.length(), "]").toString();
