@@ -8,7 +8,7 @@ public class ArrayListHome {
     public static ArrayList<String> getFileLinesList(File file) throws IOException {
         ArrayList<String> fileLines = new ArrayList<>();
 
-        try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
 
             while ((line = reader.readLine()) != null) {
