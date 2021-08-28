@@ -20,12 +20,15 @@ public class Main {
                 new Person("Артём", 28)
         );
 
-        String uniqueNames = persons.stream()
+        List<String> uniqueNamesList = persons.stream()
                 .map(Person::getName)
                 .distinct()
-                .collect(Collectors.joining(", "));
+                .collect(Collectors.toList());
 
-        System.out.println("Имена: " + uniqueNames);
+        String uniqueNames = uniqueNamesList.stream()
+                .collect(Collectors.joining(", ", "Имена: ", "."));
+
+        System.out.println(uniqueNames);
 
         List<Person> personsUnder18 = persons.stream()
                 .filter(person -> person.getAge() < 18)
@@ -36,11 +39,11 @@ public class Main {
                 .average()
                 .ifPresent(averageAge -> System.out.println("Средний возраст людей до 18 лет: " + averageAge));
 
-        Map<String, Double> personsByName = persons.stream()
+        Map<String, Double> averageAgeByName = persons.stream()
                 .collect(Collectors.groupingBy(Person::getName, Collectors.averagingDouble(Person::getAge)));
 
         System.out.println("Имя: Средний возраст");
-        personsByName.forEach((name, averageAge) -> System.out.printf("%s: %s%n", name, averageAge));
+        averageAgeByName.forEach((name, averageAge) -> System.out.printf("%s: %s%n", name, averageAge));
 
         List<Person> personsFrom20To45 = persons.stream()
                 .filter(person -> person.getAge() >= 20 && person.getAge() <= 45)
