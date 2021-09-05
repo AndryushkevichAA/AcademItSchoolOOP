@@ -12,29 +12,26 @@ public class Main {
         double[][] arrays = {numbers1, numbers2, numbers3};
 
         Vector[] vectors = {
-                new Vector(4),
+                new Vector(3),
                 new Vector(numbers1),
                 new Vector(3, numbers2),
+                new Vector(numbers3)
         };
 
         double[][] matrix = {
-                {1, 20, 3, 4},
-                {5, 26, 7, 8},
-                {9, 10, 31, 12},
-                {13, 44, 15, 56}
+                {1, 20, 3},
+                {5, 26, 7},
+                {9, 10, 31}
         };
 
         Matrix matrix1 = new Matrix(arrays);
         Matrix matrix2 = new Matrix(vectors);
-        Matrix matrix3 = new Matrix(4, 4);
+        Matrix matrix3 = new Matrix(3, 3);
         Matrix matrix4 = new Matrix(new Matrix(matrix));
 
-        System.out.println("Матрица размера " + matrix1.getRowsNumber() + " х " + matrix1.getColumnsNumber() + " : "
-                + matrix1);
-        System.out.println("Матрица размера " + matrix2.getRowsNumber() + " х " + matrix2.getColumnsNumber() + " : "
-                + matrix2);
-        System.out.println("Матрица нулей размера " + matrix3.getRowsNumber() + " х " + matrix3.getColumnsNumber() + " : "
-                + matrix3);
+        System.out.println("Матрица размера " + matrix1.getRowsCount() + " х " + matrix1.getColumnsCount() + " : " + matrix1);
+        System.out.println("Матрица размера " + matrix2.getRowsCount() + " х " + matrix2.getColumnsCount() + " : " + matrix2);
+        System.out.println("Матрица нулей размера " + matrix3.getRowsCount() + " х " + matrix3.getColumnsCount() + " : " + matrix3);
 
         Vector row = new Vector(numbers3);
         matrix2.setRow(2, row);
@@ -47,7 +44,7 @@ public class Main {
         System.out.println("Вектор-столбец по индексу " + columnIndex + ": " + matrix1.getColumn(columnIndex));
 
         matrix1.transpose();
-        System.out.println("Транспонирование матрицы: " + matrix1.transpose());
+        System.out.println("Транспонирование матрицы: " + matrix1);
 
         int scalar = 2;
         matrix1.multiplyByScalar(scalar);
@@ -69,11 +66,11 @@ public class Main {
         double determinant = matrix4.getDeterminant();
         System.out.println("Определитель матрицы 4 = " + determinant);
 
-        Vector vector = new Vector(numbers2);
+        Vector vector = new Vector(numbers1);
         Vector multiplyByVectorResult = matrix4.multiplyByVector(vector);
         System.out.println(matrix4 + " * " + vector + " = " + multiplyByVectorResult);
 
-        Matrix multiplyResult = Matrix.getMultiplyResult(matrix1, matrix4);
+        Matrix multiplyResult = Matrix.getProduct(matrix1, matrix4);
         System.out.println(matrix1 + " * " + matrix4 + " = " + multiplyResult);
     }
 }
