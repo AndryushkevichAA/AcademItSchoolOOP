@@ -3,18 +3,19 @@ package ru.nsu.andryushkevich.array_list;
 import java.util.*;
 
 public class ArrayList<T> implements List<T> {
+    private static final int DEFAULT_CAPACITY = 10;
     private T[] items;
     private int size;
     private int modCount;
 
     public ArrayList() {
         //noinspection unchecked
-        items = (T[]) new Object[10];
+        items = (T[]) new Object[DEFAULT_CAPACITY];
     }
 
     public ArrayList(int capacity) {
-        if (capacity <= 0) {
-            throw new IllegalArgumentException("Вместимость должна быть > 0. Переданое значение: " + capacity);
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Вместимость должна быть больше или равна 0. Переданное значение: " + capacity);
         }
 
         //noinspection unchecked
@@ -75,14 +76,13 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public <T1> T1[] toArray(T1[] a) {
-        //noinspection unchecked
-        T1[] newTypeItems = (T1[]) Arrays.copyOf(items, size, a.getClass());
-
         if (a.length < size) {
-            return newTypeItems;
+            //noinspection unchecked
+            return (T1[]) Arrays.copyOf(items, size, a.getClass());
         }
 
-        System.arraycopy(newTypeItems, 0, a, 0, size);
+        //noinspection SuspiciousSystemArraycopy
+        System.arraycopy(items, 0, a, 0, size);
 
         if (a.length > size) {
             a[size] = null;
@@ -92,36 +92,30 @@ public class ArrayList<T> implements List<T> {
     }
 
     private void increaseCapacity() {
-        items = Arrays.copyOf(items, items.length * 2);
+        int capacity = items.length;
+
+        if (capacity == 0) {
+            capacity = 1;
+        }
+
+        items = Arrays.copyOf(items, capacity * 2);
     }
 
     @Override
     public boolean add(T t) {
-        if (size >= items.length) {
-            increaseCapacity();
-        }
-
-        items[size] = t;
-
-        size++;
-        modCount++;
+        add(size, t);
 
         return true;
     }
 
     @Override
     public boolean remove(Object o) {
-        for (int i = 0; i < size; i++) {
-            if (Objects.equals(items[i], o)) {
-                if (i < size - 1) {
-                    System.arraycopy(items, i + 1, items, i, size - i - 1);
-                }
+        int index = indexOf(o);
 
-                size--;
-                modCount++;
+        if (index != -1) {
+            remove(index);
 
-                return true;
-            }
+            return true;
         }
 
         return false;
@@ -137,12 +131,8 @@ public class ArrayList<T> implements List<T> {
     public boolean containsAll(Collection<?> c) {
         checkCollection(c);
 
-        if (c.size() == 0) {
-            return false;
-        }
-
-        for (Object cElement : c) {
-            if (!contains(cElement)) {
+        for (Object e : c) {
+            if (!contains(e)) {
                 return false;
             }
         }
@@ -152,56 +142,34 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        checkCollection(c);
-
-        if (c.size() == 0) {
-            return false;
-        }
-
-        ensureCapacity(size + c.size());
-
-        int i = size;
-
-        for (T cElement : c) {
-            items[i] = cElement;
-            i++;
-        }
-
-        size += c.size();
-        modCount++;
-
-        return true;
+        return addAll(size, c);
     }
 
     @Override
     public boolean addAll(int index, Collection<? extends T> c) {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException("Индекс должен быть больше или равен 0 и меньше или равен " + size
-                    + ". Переданое значение: " + index);
+                    + ". Переданное значение: " + index);
         }
 
         checkCollection(c);
 
-        int cSize = c.size();
+        int collectionSize = c.size();
 
-        if (cSize == 0) {
+        if (collectionSize == 0) {
             return false;
         }
 
-        if (index == size) {
-            return addAll(c);
-        }
+        ensureCapacity(size + collectionSize);
+        System.arraycopy(items, index, items, index + collectionSize, size - index);
 
-        ensureCapacity(size + cSize);
-        System.arraycopy(items, index, items, index + cSize, size - index);
-
-        size += cSize;
+        size += collectionSize;
         modCount++;
 
         int i = index;
 
-        for (T cElement : c) {
-            items[i] = cElement;
+        for (T e : c) {
+            items[i] = e;
             i++;
         }
 
@@ -216,10 +184,7 @@ public class ArrayList<T> implements List<T> {
 
         for (int i = 0; i < size; i++) {
             if (c.contains(items[i])) {
-                System.arraycopy(items, i + 1, items, i, size - i - 1);
-
-                size--;
-                modCount++;
+                remove(i);
 
                 isRemoved = true;
 
@@ -238,10 +203,7 @@ public class ArrayList<T> implements List<T> {
 
         for (int i = 0; i < size; i++) {
             if (!c.contains(items[i])) {
-                System.arraycopy(items, i + 1, items, i, size - i - 1);
-
-                size--;
-                modCount++;
+                remove(i);
 
                 isRemoved = true;
 
@@ -255,6 +217,10 @@ public class ArrayList<T> implements List<T> {
     @Override
     public void clear() {
         if (!isEmpty()) {
+            for (int i = 0; i < size; i++) {
+                items[i] = null;
+            }
+
             modCount++;
         }
 
@@ -264,7 +230,7 @@ public class ArrayList<T> implements List<T> {
     private void checkIndex(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Индекс должен быть больше или равен 0 и меньше " + size
-                    + ". Переданое значение: " + index);
+                    + ". Переданное значение: " + index);
         }
     }
 
@@ -276,18 +242,21 @@ public class ArrayList<T> implements List<T> {
     }
 
     @Override
-    public T set(int index, T element) {
+    public T set(int index, T item) {
         checkIndex(index);
 
         T oldItem = items[index];
-        items[index] = element;
+        items[index] = item;
 
         return oldItem;
     }
 
     @Override
-    public void add(int index, T element) {
-        checkIndex(index);
+    public void add(int index, T item) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Индекс должен быть больше или равен 0 и меньше или равен " + size
+                    + ". Переданное значение: " + index);
+        }
 
         if (size >= items.length) {
             increaseCapacity();
@@ -297,7 +266,7 @@ public class ArrayList<T> implements List<T> {
             System.arraycopy(items, index, items, index + 1, size - index);
         }
 
-        items[index] = element;
+        items[index] = item;
 
         size++;
         modCount++;

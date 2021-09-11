@@ -122,7 +122,6 @@ public class Main {
             System.out.println("Элемент " + item3 + " не найден");
         }
 
-
         System.out.println("Начальная вместимость списка lines1: " + lines1.getCapacity());
         int minCapacity = 15;
         lines1.ensureCapacity(minCapacity);
