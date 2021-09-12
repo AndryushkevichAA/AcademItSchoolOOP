@@ -9,7 +9,7 @@ public class Matrix {
 
     public Matrix(int rowsCount, int columnsCount) {
         if (rowsCount <= 0 || columnsCount <= 0) {
-            throw new IllegalArgumentException("Размеры матрицы должны быть больше 0. Переданые размеры: "
+            throw new IllegalArgumentException("Размеры матрицы должны быть больше 0. Переданные размеры: "
                     + rowsCount + "х" + columnsCount);
         }
 
@@ -26,10 +26,8 @@ public class Matrix {
 
     public Matrix(double[][] arrays) {
         if (arrays.length == 0) {
-            throw new IllegalArgumentException("Размер переданного двумерного массива должен быть больше 0");
+            throw new IllegalArgumentException("Количество строк переданного двумерного массива должно быть больше 0");
         }
-
-        rows = new Vector[arrays.length];
 
         int maxRowLength = 0;
 
@@ -38,6 +36,12 @@ public class Matrix {
                 maxRowLength = row.length;
             }
         }
+
+        if (maxRowLength == 0) {
+            throw new IllegalArgumentException("Количество столбцов переданного двумерного массива должно быть больше 0");
+        }
+
+        rows = new Vector[arrays.length];
 
         for (int i = 0; i < arrays.length; i++) {
             rows[i] = new Vector(maxRowLength, arrays[i]);
@@ -79,7 +83,7 @@ public class Matrix {
 
         if (index < 0 || index >= rowsCount) {
             throw new IndexOutOfBoundsException("Индекс должен быть больше или равен 0 и меньше " + rowsCount
-                    + " Переданое значение: " + index);
+                    + " Переданное значение: " + index);
         }
     }
 
@@ -87,18 +91,22 @@ public class Matrix {
     public Vector getRow(int index) {
         checkRowIndex(index);
 
-        return rows[index];
+        return new Vector(rows[index]);
     }
 
     // Задание вектора-строки по индексу
     public void setRow(int index, Vector row) {
         checkRowIndex(index);
 
-        if (row.getSize() == 0) {
-            throw new IllegalArgumentException("Размер переданного вектоа должен быть больше 0");
+        int columnsCount = getColumnsCount();
+        int rowSize = row.getSize();
+
+        if (rowSize != columnsCount) {
+            throw new IllegalArgumentException("Размер переданного вектора должен быть равен " + columnsCount
+                    + ". Размер переданного вектора: " + rowSize);
         }
 
-        rows[index] = new Vector(getColumnsCount());
+        rows[index] = new Vector(columnsCount);
         rows[index].add(row);
     }
 
@@ -108,7 +116,7 @@ public class Matrix {
 
         if (index < 0 || index >= columnsCount) {
             throw new IndexOutOfBoundsException("Индекс должен быть больше или равен 0 и меньше " + columnsCount
-                    + " Переданое значение: " + index);
+                    + " Переданное значение: " + index);
         }
 
         int rowsCount = getRowsCount();
@@ -263,20 +271,20 @@ public class Matrix {
     // Умножение матриц
     public static Matrix getProduct(Matrix matrix1, Matrix matrix2) {
         int matrix1ColumnsCount = matrix1.getColumnsCount();
-        int matrix2rowsCount = matrix2.getRowsCount();
+        int matrix2RowsCount = matrix2.getRowsCount();
 
-        if (matrix1ColumnsCount != matrix2rowsCount) {
+        if (matrix1ColumnsCount != matrix2RowsCount) {
             throw new IllegalArgumentException("Количество столбцов первой матрицы и количество строк второй матрицы должны быть равны. " +
                     "Количество столбцов первой матрицы: " + matrix1ColumnsCount +
-                    " Количество строк второй матрицы: " + matrix2rowsCount);
+                    " Количество строк второй матрицы: " + matrix2RowsCount);
         }
 
-        int matrix1rowsCount = matrix1.getRowsCount();
+        int matrix1RowsCount = matrix1.getRowsCount();
         int matrix2ColumnsCount = matrix2.getColumnsCount();
 
-        Matrix resultMatrix = new Matrix(matrix1rowsCount, matrix2ColumnsCount);
+        Matrix resultMatrix = new Matrix(matrix1RowsCount, matrix2ColumnsCount);
 
-        for (int i = 0; i < matrix1rowsCount; i++) {
+        for (int i = 0; i < matrix1RowsCount; i++) {
             for (int j = 0; j < matrix2ColumnsCount; j++) {
                 double resultMatrixElement = 0;
 

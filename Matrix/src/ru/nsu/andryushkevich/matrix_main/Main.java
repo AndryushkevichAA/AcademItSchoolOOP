@@ -70,7 +70,7 @@ public class Main {
         Vector multiplyByVectorResult = matrix4.multiplyByVector(vector);
         System.out.println(matrix4 + " * " + vector + " = " + multiplyByVectorResult);
 
-        Matrix multiplyResult = Matrix.getProduct(matrix1, matrix4);
-        System.out.println(matrix1 + " * " + matrix4 + " = " + multiplyResult);
+        Matrix product = Matrix.getProduct(matrix1, matrix4);
+        System.out.println(matrix1 + " * " + matrix4 + " = " + product);
     }
 }
