@@ -4,6 +4,7 @@ import java.util.*;
 
 public class ArrayList<T> implements List<T> {
     private static final int DEFAULT_CAPACITY = 10;
+
     private T[] items;
     private int size;
     private int modCount;
@@ -55,7 +56,7 @@ public class ArrayList<T> implements List<T> {
             }
 
             if (expectedModCount != modCount) {
-                throw new ConcurrentModificationException("Невозможно совершать изменения во время итерации");
+                throw new ConcurrentModificationException("Совершено изменение во время итерации");
             }
 
             currentIndex++;
@@ -92,18 +93,14 @@ public class ArrayList<T> implements List<T> {
     }
 
     private void increaseCapacity() {
-        int capacity = items.length;
+        int capacity = (items.length == 0) ? 1 : items.length * 2;
 
-        if (capacity == 0) {
-            capacity = 1;
-        }
-
-        items = Arrays.copyOf(items, capacity * 2);
+        items = Arrays.copyOf(items, capacity);
     }
 
     @Override
-    public boolean add(T t) {
-        add(size, t);
+    public boolean add(T item) {
+        add(size, item);
 
         return true;
     }
@@ -123,7 +120,7 @@ public class ArrayList<T> implements List<T> {
 
     private void checkCollection(Collection<?> c) {
         if (c == null) {
-            throw new NoSuchElementException("Переданной коллекции не существует");
+            throw new NullPointerException("Ссылкой переданной коллекции является null");
         }
     }
 
@@ -180,6 +177,10 @@ public class ArrayList<T> implements List<T> {
     public boolean removeAll(Collection<?> c) {
         checkCollection(c);
 
+        if (c.isEmpty()) {
+            return false;
+        }
+
         boolean isRemoved = false;
 
         for (int i = 0; i < size; i++) {
@@ -216,14 +217,15 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public void clear() {
-        if (!isEmpty()) {
-            for (int i = 0; i < size; i++) {
-                items[i] = null;
-            }
-
-            modCount++;
+        if (isEmpty()) {
+            return;
         }
 
+        for (int i = 0; i < size; i++) {
+            items[i] = null;
+        }
+
+        modCount++;
         size = 0;
     }
 
@@ -282,6 +284,8 @@ public class ArrayList<T> implements List<T> {
 
         size--;
         modCount++;
+
+        items[size] = null;
 
         return removedItem;
     }
