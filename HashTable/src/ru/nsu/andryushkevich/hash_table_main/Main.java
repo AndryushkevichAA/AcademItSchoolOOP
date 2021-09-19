@@ -7,8 +7,8 @@ import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        ArrayList<Integer> numbers1 = new ArrayList<>(Arrays.asList(1, -9, 8));
-        ArrayList<Integer> numbers2 = new ArrayList<>(Arrays.asList(0, 15, 23));
+        ArrayList<Integer> numbers1 = new ArrayList<>(Arrays.asList(1, -9, 100, 8));
+        ArrayList<Integer> numbers2 = new ArrayList<>(Arrays.asList(0, 15, 100, 23));
 
         HashTable<Integer> hashTable = new HashTable<>(7);
         hashTable.add(25);
@@ -46,7 +46,7 @@ public class Main {
             System.out.println("Хэш-таблица после удаления элемента " + removedNumber + ":");
             System.out.println(hashTable);
         } else {
-            System.out.println("Удаление невозможно. Элемент " + removedNumber + "не найден");
+            System.out.println("Удаление невозможно. Элемент " + removedNumber + " не найден");
         }
 
         if (hashTable.containsAll(numbers2)) {
@@ -70,7 +70,7 @@ public class Main {
             System.out.println("Пересечение хэш-таблицы со списком numbers4:");
             System.out.println(hashTable);
         } else {
-            System.out.println("Хэш-таблица не содержит элементы списка numbers4");
+            System.out.println("Пересечение хэш-таблицы со списком numbers4 не обнаружено");
         }
 
         hashTable.clear();
