@@ -106,8 +106,7 @@ public class Matrix {
                     + ". Размер переданного вектора: " + rowSize);
         }
 
-        rows[index] = new Vector(columnsCount);
-        rows[index].add(row);
+        rows[index] = new Vector(row);
     }
 
     // Получение вектора-столбца по индексу
