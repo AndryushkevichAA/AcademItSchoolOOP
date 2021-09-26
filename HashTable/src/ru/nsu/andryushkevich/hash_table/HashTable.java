@@ -74,10 +74,7 @@ public class HashTable<T> implements Collection<T> {
                 elementIndex = -1;
             }
 
-            if (elementIndex < lists[listIndex].size() - 1) {
-                elementIndex++;
-            }
-
+            elementIndex++;
             count++;
 
             return lists[listIndex].get(elementIndex);
