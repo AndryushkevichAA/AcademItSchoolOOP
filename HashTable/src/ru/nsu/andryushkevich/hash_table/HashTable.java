@@ -138,15 +138,19 @@ public class HashTable<T> implements Collection<T> {
     public boolean remove(Object o) {
         int index = getIndex(o);
 
-        modCount++;
-        size--;
+        if (lists[index] != null && lists[index].remove(o)) {
+            modCount++;
+            size--;
 
-        return lists[index] != null && lists[index].remove(o);
+            return true;
+        }
+
+        return false;
     }
 
     private void checkCollection(Collection<?> c) {
         if (c == null) {
-            throw new NullPointerException("Ссылкой переданной коллекции является null");
+            throw new NullPointerException("Ссылка на коллекцию равна null");
         }
     }
 
@@ -171,15 +175,11 @@ public class HashTable<T> implements Collection<T> {
             return false;
         }
 
-        boolean isAdded = false;
-
         for (T e : c) {
-            if (add(e)) {
-                isAdded = true;
-            }
+            add(e);
         }
 
-        return isAdded;
+        return true;
     }
 
     @Override
@@ -190,21 +190,19 @@ public class HashTable<T> implements Collection<T> {
             return false;
         }
 
-        int changesCount = 0;
+        boolean isRemoved = false;
 
         for (ArrayList<T> list : lists) {
             if (list != null) {
                 int listInitialSize = list.size();
 
                 if (list.removeAll(c)) {
-                    changesCount++;
+                    isRemoved = true;
 
                     size -= listInitialSize - list.size();
                 }
             }
         }
-
-        boolean isRemoved = changesCount > 0;
 
         if (isRemoved) {
             modCount++;
@@ -217,21 +215,19 @@ public class HashTable<T> implements Collection<T> {
     public boolean retainAll(Collection<?> c) {
         checkCollection(c);
 
-        int changesCount = 0;
+        boolean isRemoved = false;
 
         for (ArrayList<T> list : lists) {
             if (list != null) {
                 int listInitialSize = list.size();
 
                 if (list.retainAll(c)) {
-                    changesCount++;
+                    isRemoved = true;
 
                     size -= listInitialSize - list.size();
                 }
             }
         }
-
-        boolean isRemoved = changesCount > 0;
 
         if (isRemoved) {
             modCount++;
@@ -267,15 +263,7 @@ public class HashTable<T> implements Collection<T> {
         int i = 0;
 
         for (ArrayList<T> list : lists) {
-            stringBuilder.append(i);
-
-            if (list != null) {
-                stringBuilder.append(" ").append(list.toString());
-            } else {
-                stringBuilder.append(" null");
-            }
-
-            stringBuilder.append(System.lineSeparator());
+            stringBuilder.append(i).append(" ").append(list).append(System.lineSeparator());
 
             i++;
         }
