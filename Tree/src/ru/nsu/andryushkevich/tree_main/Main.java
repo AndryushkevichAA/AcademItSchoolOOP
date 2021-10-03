@@ -16,9 +16,11 @@ public class Main {
         tree.add(19);
         tree.add(19);
 
+        System.out.println("Узлы в порядке обхода дерева в ширину: ");
+        tree.visitByWidth(System.out::println);
 
-        System.out.println("Узлы в порядке обхода дерева в ширину: " + tree.toStringByWidth());
-        System.out.println("Узлы в порядке обхода дерева в глубину: " + tree.toStringByDepth());
+        System.out.println("Узлы в порядке обхода дерева в глубину: ");
+        tree.visitByDepth(System.out::println);
 
         System.out.println("Печать дерева с помощью обхода в глубину с рекурсией: ");
         tree.printTree();
@@ -26,8 +28,11 @@ public class Main {
         System.out.println("Размер дерева: " + tree.getSize());
 
         Integer data1 = 9;
-        System.out.println("Результат поиска узла со значением " + data1 + ": ");
-        System.out.println(tree.getNode(data1));
+        if (tree.contains(data1)) {
+            System.out.println("Узел со значением " + data1 + " найден.");
+        } else {
+            System.out.println("Узел со значением " + data1 + " не найден.");
+        }
 
         Integer data2 = 2;
         if (tree.remove(data2)) {
