@@ -81,7 +81,7 @@ public class Main {
         }
 
         if (lines1.retainAll(lines2)) {
-            System.out.println("Пересечение списков lines1 и lines2: " + lines2);
+            System.out.println("Пересечение списков lines1 и lines2: " + lines1);
         } else {
             System.out.println("Списки не пересекаются");
         }

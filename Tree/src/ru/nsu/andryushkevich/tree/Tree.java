@@ -1,15 +1,21 @@
 package ru.nsu.andryushkevich.tree;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class Tree<T extends Comparable<T>> {
+public class Tree<T> {
     private TreeNode<T> root;
     private int size;
-    private final Comparator<T> comparator = new TreeComparator<>();
+    private Comparator<T> comparator;
 
-    public void add(T data) {
+    public Tree() {
+    }
+
+    public Tree(Comparator<T> comparator) {
+        this.comparator = comparator;
+    }
+
+    private void addWithComparator(T data) {
         TreeNode<T> newNode = new TreeNode<>(data);
 
         if (size == 0) {
@@ -47,6 +53,57 @@ public class Tree<T extends Comparable<T>> {
         }
     }
 
+    public void add(T data) {
+        if (comparator != null) {
+            addWithComparator(data);
+            return;
+        }
+
+        if (!(data instanceof Comparable)) {
+            throw new ClassCastException("Тип переданного значения должен реализовывать интерфейс Comparable. " +
+                    "Переданое значение: " + data);
+        }
+
+        TreeNode<T> newNode = new TreeNode<>(data);
+
+        if (size == 0) {
+            root = newNode;
+            size++;
+
+            return;
+        }
+
+        TreeNode<T> node = root;
+
+        while (true) {
+            //noinspection unchecked
+            Comparable<T> nodeData = (Comparable<T>) node.getData();
+
+            int comparisonResult = nodeData.compareTo(data);
+
+            if (comparisonResult > 0) {
+                if (node.getLeft() == null) {
+                    node.setLeft(newNode);
+                    size++;
+
+                    return;
+                }
+
+                node = node.getLeft();
+                continue;
+            }
+
+            if (node.getRight() == null) {
+                node.setRight(newNode);
+                size++;
+
+                return;
+            }
+
+            node = node.getRight();
+        }
+    }
+
     public boolean contains(T data) {
         if (size == 0) {
             return false;
@@ -54,8 +111,30 @@ public class Tree<T extends Comparable<T>> {
 
         TreeNode<T> node = root;
 
+        if (comparator != null) {
+            while (node != null) {
+                int comparisonResult = comparator.compare(node.getData(), data);
+
+                if (comparisonResult == 0) {
+                    return true;
+                }
+
+                if (comparisonResult > 0) {
+                    node = node.getLeft();
+                    continue;
+                }
+
+                node = node.getRight();
+            }
+
+            return false;
+        }
+
         while (node != null) {
-            int comparisonResult = comparator.compare(node.getData(), data);
+            //noinspection unchecked
+            Comparable<T> nodeData = (Comparable<T>) node.getData();
+
+            int comparisonResult = nodeData.compareTo(data);
 
             if (comparisonResult == 0) {
                 return true;
@@ -72,7 +151,7 @@ public class Tree<T extends Comparable<T>> {
         return false;
     }
 
-    private TreeNode<T> getNext(TreeNode<T> node) {
+    private static <T> TreeNode<T> getNext(TreeNode<T> node) {
         if (node.getRight() == null) {
             return node.getLeft();
         }
@@ -102,23 +181,48 @@ public class Tree<T extends Comparable<T>> {
         TreeNode<T> removedNode = root;
         TreeNode<T> parent = null;
 
-        while (true) {
-            if (removedNode == null) {
-                return false;
+        if (comparator != null) {
+            while (true) {
+                if (removedNode == null) {
+                    return false;
+                }
+
+                int comparisonResult = comparator.compare(removedNode.getData(), data);
+
+                if (comparisonResult == 0) {
+                    break;
+                }
+
+                parent = removedNode;
+
+                if (comparisonResult > 0) {
+                    removedNode = removedNode.getLeft();
+                } else {
+                    removedNode = removedNode.getRight();
+                }
             }
+        } else {
+            while (true) {
+                if (removedNode == null) {
+                    return false;
+                }
 
-            int comparisonResult = comparator.compare(removedNode.getData(), data);
+                //noinspection unchecked
+                Comparable<T> removedNodeData = (Comparable<T>) removedNode.getData();
 
-            if (comparisonResult == 0) {
-                break;
-            }
+                int comparisonResult = removedNodeData.compareTo(data);
 
-            parent = removedNode;
+                if (comparisonResult == 0) {
+                    break;
+                }
 
-            if (comparisonResult > 0) {
-                removedNode = removedNode.getLeft();
-            } else {
-                removedNode = removedNode.getRight();
+                parent = removedNode;
+
+                if (comparisonResult > 0) {
+                    removedNode = removedNode.getLeft();
+                } else {
+                    removedNode = removedNode.getRight();
+                }
             }
         }
 
@@ -168,7 +272,7 @@ public class Tree<T extends Comparable<T>> {
 
     public void visitByWidth(Consumer<T> consumer) {
         if (size == 0) {
-            throw new NoSuchElementException("Пустое дерево.");
+            return;
         }
 
         Queue<TreeNode<T>> queue = new LinkedList<>();
@@ -189,7 +293,7 @@ public class Tree<T extends Comparable<T>> {
 
     public void visitByDepth(Consumer<T> consumer) {
         if (size == 0) {
-            throw new NoSuchElementException("Пустое дерево.");
+            return;
         }
 
         Deque<TreeNode<T>> stack = new LinkedList<>();
@@ -208,30 +312,53 @@ public class Tree<T extends Comparable<T>> {
         }
     }
 
-    private String getSpace(int spacesNumber) {
-        return " ".repeat(Math.max(0, spacesNumber));
-    }
-
-    private void visitByDepthWithRecursion(TreeNode<T> node, int level, BiConsumer<String, T> consumer) {
-        if (node.getRight() != null) {
-            visitByDepthWithRecursion(node.getRight(), level + 1, consumer);
-        }
-
-        consumer.accept(getSpace(level * 4), node.getData());
+    private static <T> void visitNodes(TreeNode<T> node, Consumer<T> consumer) {
+        consumer.accept(node.getData());
 
         if (node.getLeft() != null) {
-            visitByDepthWithRecursion(node.getLeft(), level + 1, consumer);
+            visitNodes(node.getLeft(), consumer);
+        }
+
+        if (node.getRight() != null) {
+            visitNodes(node.getRight(), consumer);
+        }
+    }
+
+    public void visitByDepthWithRecursion(Consumer<T> consumer) {
+        if (size == 0) {
+            return;
+        }
+
+        visitNodes(root, consumer);
+    }
+
+    private static void printSpace(int spacesNumber) {
+        for (int i = 0; i < spacesNumber; ++i) {
+            System.out.print(" ");
+        }
+    }
+
+    private static <T> void printNodes(TreeNode<T> node, int level) {
+        if (node.getRight() != null) {
+            printNodes(node.getRight(), level + 1);
+        }
+
+        printSpace(level * 4);
+        System.out.println(node.getData());
+
+        if (node.getLeft() != null) {
+            printNodes(node.getLeft(), level + 1);
         }
     }
 
     public void printTree() {
         if (size == 0) {
-            throw new NoSuchElementException("Пустое дерево. Отсутствуют узлы для печати");
+            return;
         }
 
         System.out.println();
 
-        visitByDepthWithRecursion(root, 0, (s, t) -> System.out.println(s + t));
+        printNodes(root, 0);
 
         System.out.println();
     }
