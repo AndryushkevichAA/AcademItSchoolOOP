@@ -1,4 +1,4 @@
-package ru.nsu.andryushcevich.temperature_main;
+package ru.nsu.andryushkevich.temperature_main;
 
 import ru.nsu.andryushkevich.temperature.controller.TemperatureController;
 import ru.nsu.andryushkevich.temperature.interfaces.TemperatureConverter;
