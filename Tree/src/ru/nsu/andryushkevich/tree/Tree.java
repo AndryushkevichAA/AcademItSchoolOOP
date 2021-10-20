@@ -15,51 +15,29 @@ public class Tree<T> {
         this.comparator = comparator;
     }
 
-    private void addWithComparator(T data) {
-        TreeNode<T> newNode = new TreeNode<>(data);
-
-        if (size == 0) {
-            root = newNode;
-            size++;
-
-            return;
+    private int getComparisonResult(T data1, T data2) {
+        if (comparator != null) {
+            return comparator.compare(data1, data2);
         }
 
-        TreeNode<T> node = root;
-
-        while (true) {
-            int comparisonResult = comparator.compare(node.getData(), data);
-
-            if (comparisonResult > 0) {
-                if (node.getLeft() == null) {
-                    node.setLeft(newNode);
-                    size++;
-
-                    return;
-                }
-
-                node = node.getLeft();
-                continue;
-            }
-
-            if (node.getRight() == null) {
-                node.setRight(newNode);
-                size++;
-
-                return;
-            }
-
-            node = node.getRight();
+        if (data1 == null && data2 == null) {
+            return 0;
         }
+
+        if (data1 == null) {
+            return -1;
+        }
+
+        if (data2 == null) {
+            return 1;
+        }
+
+        //noinspection unchecked
+        return ((Comparable<T>) data1).compareTo(data2);
     }
 
     public void add(T data) {
-        if (comparator != null) {
-            addWithComparator(data);
-            return;
-        }
-
-        if (!(data instanceof Comparable)) {
+        if (data != null && comparator == null && !(data instanceof Comparable)) {
             throw new ClassCastException("Тип переданного значения должен реализовывать интерфейс Comparable. " +
                     "Переданое значение: " + data);
         }
@@ -76,10 +54,7 @@ public class Tree<T> {
         TreeNode<T> node = root;
 
         while (true) {
-            //noinspection unchecked
-            Comparable<T> nodeData = (Comparable<T>) node.getData();
-
-            int comparisonResult = nodeData.compareTo(data);
+            int comparisonResult = getComparisonResult(node.getData(), data);
 
             if (comparisonResult > 0) {
                 if (node.getLeft() == null) {
@@ -111,30 +86,8 @@ public class Tree<T> {
 
         TreeNode<T> node = root;
 
-        if (comparator != null) {
-            while (node != null) {
-                int comparisonResult = comparator.compare(node.getData(), data);
-
-                if (comparisonResult == 0) {
-                    return true;
-                }
-
-                if (comparisonResult > 0) {
-                    node = node.getLeft();
-                    continue;
-                }
-
-                node = node.getRight();
-            }
-
-            return false;
-        }
-
         while (node != null) {
-            //noinspection unchecked
-            Comparable<T> nodeData = (Comparable<T>) node.getData();
-
-            int comparisonResult = nodeData.compareTo(data);
+            int comparisonResult = getComparisonResult(node.getData(), data);
 
             if (comparisonResult == 0) {
                 return true;
@@ -181,48 +134,23 @@ public class Tree<T> {
         TreeNode<T> removedNode = root;
         TreeNode<T> parent = null;
 
-        if (comparator != null) {
-            while (true) {
-                if (removedNode == null) {
-                    return false;
-                }
-
-                int comparisonResult = comparator.compare(removedNode.getData(), data);
-
-                if (comparisonResult == 0) {
-                    break;
-                }
-
-                parent = removedNode;
-
-                if (comparisonResult > 0) {
-                    removedNode = removedNode.getLeft();
-                } else {
-                    removedNode = removedNode.getRight();
-                }
+        while (true) {
+            if (removedNode == null) {
+                return false;
             }
-        } else {
-            while (true) {
-                if (removedNode == null) {
-                    return false;
-                }
 
-                //noinspection unchecked
-                Comparable<T> removedNodeData = (Comparable<T>) removedNode.getData();
+            int comparisonResult = getComparisonResult(removedNode.getData(), data);
 
-                int comparisonResult = removedNodeData.compareTo(data);
+            if (comparisonResult == 0) {
+                break;
+            }
 
-                if (comparisonResult == 0) {
-                    break;
-                }
+            parent = removedNode;
 
-                parent = removedNode;
-
-                if (comparisonResult > 0) {
-                    removedNode = removedNode.getLeft();
-                } else {
-                    removedNode = removedNode.getRight();
-                }
+            if (comparisonResult > 0) {
+                removedNode = removedNode.getLeft();
+            } else {
+                removedNode = removedNode.getRight();
             }
         }
 
